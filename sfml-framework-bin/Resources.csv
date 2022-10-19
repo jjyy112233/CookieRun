@@ -1,0 +1,6 @@
+id,type(0: Texture. 1:Font 2: Sound)
+graphics/player3.png,0
+graphics/player5.png,0
+fonts/NotoSansKR-Medium.otf,1
+sounds/gameSceneBgm.wav,2
+sounds/select.wav,2
