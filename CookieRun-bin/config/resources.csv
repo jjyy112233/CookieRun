@@ -1,0 +1,24 @@
+id,type(0: Texture. 1:Font 2: Sound 3:Animation)
+graphics/episode1/s1-0.png,0
+graphics/episode1/s1-1.png,0
+graphics/episode1/s2-0.png,0
+graphics/episode1/s2-1.png,0
+graphics/episode1/s2-2.png,0
+graphics/episode1/s3-0.png,0
+graphics/episode1/s3-1.png,0
+graphics/episode1/s3-2.png,0
+graphics/episode1/s1-b.png,0
+graphics/cookie/jungle/run.png,0
+graphics/cookie/jungle/jump.png,0
+graphics/cookie/jungle/djump.png,0
+graphics/cookie/jungle/dash.png,0
+graphics/cookie/jungle/fly.png,0
+graphics/cookie/jungle/down.png,0
+graphics/cookie/jungle/slide.png,0
+animations/cookie/jungle/run.csv,3
+animations/cookie/jungle/jump.csv,3
+animations/cookie/jungle/djump.csv,3
+animations/cookie/jungle/slide.csv,3
+animations/cookie/jungle/fly.csv,3
+animations/cookie/jungle/dash.csv,3
+animations/cookie/jungle/down.csv,3
