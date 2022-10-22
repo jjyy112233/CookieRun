@@ -3,12 +3,22 @@
 #include "../GameObject/Object.h"
 #include "../Framework/Framework.h"
 
-Scene::Scene(Scenes type) :type(type), viewSpeed(500.f)
+Scene::Scene(Scenes type) :type(type), viewSpeed(500.f), initViewSpeed(500.f)
 {
 }
 
 Scene::~Scene()
 {
+}
+
+void Scene::SetViewStop()
+{
+	viewSpeed = 0.f;
+}
+
+void Scene::SetViewPlay()
+{
+	viewSpeed = initViewSpeed;
 }
 
 Vector2f Scene::ScreenToWorld(Vector2i screenPos)

@@ -15,6 +15,7 @@ graphics/cookie/jungle/dash.png,0
 graphics/cookie/jungle/fly.png,0
 graphics/cookie/jungle/down.png,0
 graphics/cookie/jungle/slide.png,0
+graphics/cookie/jungle/bottom.png,0
 animations/cookie/jungle/run.csv,3
 animations/cookie/jungle/jump.csv,3
 animations/cookie/jungle/djump.csv,3
@@ -22,3 +23,4 @@ animations/cookie/jungle/slide.csv,3
 animations/cookie/jungle/fly.csv,3
 animations/cookie/jungle/dash.csv,3
 animations/cookie/jungle/down.csv,3
+animations/cookie/jungle/bottom.csv,3

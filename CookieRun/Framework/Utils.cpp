@@ -62,3 +62,7 @@ Vector2f Utils::Normalize(const Vector2f& vec) //∫§≈Õ ¡§±‘»≠
 		return vec;
 	return vec / mag;
 }
+float Utils::Distance(const Vector2f& vec1, const Vector2f& vec2)
+{
+	return Magnitude(vec1 - vec2);
+}

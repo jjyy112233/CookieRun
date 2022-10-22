@@ -5,21 +5,22 @@ class SpriteObject;
 class BackGround;
 class VertexArrayObj;
 class Cookie;
-class Stage : public Scene
+class Episode : public Scene
 {
 protected:
+	string stageName;
 	Texture* bottom;
 	vector<BackGround*> back; // 배경 정보
 	vector<vector<IntRect>> rects;
-	vector< VertexArrayObj*> bottoms;
+	vector<VertexArrayObj*> bottoms;
 	Cookie* cookie;
 
 	float botmW;
 	float botmH;
 	
 public:
-	Stage();
-	~Stage();
+	Episode();
+	~Episode();
 	virtual void Init() override;
 	virtual void Release() override;
 	virtual void Enter() override;

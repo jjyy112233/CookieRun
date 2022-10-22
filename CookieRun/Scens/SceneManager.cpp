@@ -1,5 +1,5 @@
 #include "SceneManager.h"
-#include "episode/Stage.h"
+#include "episode/Episode.h"
 #include "episode/Menu.h"
 #include "../Framework/info.h"
 #include "../Framework/ResourceManager.h"
@@ -36,9 +36,9 @@ bool SceneManager::Init()
 	LoadPath();
 
 	sceneMap[Scenes::Menu] = new Menu();
-	sceneMap[Scenes::Episode1] = new Stage();
-	sceneMap[Scenes::Episode2] = new Stage();
-	sceneMap[Scenes::Episode3] = new Stage();
+	sceneMap[Scenes::Episode1] = new Episode();
+	sceneMap[Scenes::Episode2] = new Episode();
+	sceneMap[Scenes::Episode3] = new Episode();
 
 	//for (auto& scene : sceneMap)
 	//{

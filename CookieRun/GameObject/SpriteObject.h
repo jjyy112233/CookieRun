@@ -20,5 +20,6 @@ public:
 
 	void SetTexture(Texture& tex);
 	void SetOrigin(Origins origin);
+	FloatRect GetGlobalBound();
 };
 

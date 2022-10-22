@@ -37,5 +37,6 @@ public:
 
 
 	static Vector2f Normalize(const Vector2f& vec);
+	static float Distance(const Vector2f& vec1, const Vector2f& vec2);
 };
 

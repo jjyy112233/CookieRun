@@ -1,4 +1,4 @@
-#include "Stage.h"
+#include "Episode.h"
 #include "../SceneManager.h"
 #include "../../Framework/InputMgr.h"
 #include "../../Framework/ResourceManager.h"
@@ -9,18 +9,18 @@
 #include "../../GameObject/VertexArrayObj.h"
 #include "../../GameObject/Cookie/Cookie.h"
 
-Stage::Stage()
+Episode::Episode()
 	:Scene(Scenes::Episode1)
 {
     botmW = 124.f;
     botmH = 200.f;
 }
 
-Stage::~Stage()
+Episode::~Episode()
 {
 }
 
-void Stage::Init()
+void Episode::Init()
 {
 	{
 		BackGround* back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/s1-0.png"), 0.f);
@@ -28,47 +28,49 @@ void Stage::Init()
 		back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/s1-1.png"), 50.f);
 		objList[LayerType::Back][1] = back;
 
-        vector<int> btmCnt = { 10,1,10,1,10,1,10,1,10,1,5,2,5,2,5,2,10 };
+		vector<int> btmCnt = { 10,1,10,1,10,1,10,1,10,1,5,2,5,2,5,2,10 };
+		//vector<int> btmCnt = { 20 };
 
         bottom = RESOURCES_MGR->GetTexture("graphics/episode1/s1-b.png");
         CreateBottom({ 0.f,0.f }, btmCnt, 1);
 
 		cookie = new Cookie();
 		objList[LayerType::Player][0] = cookie;
+		cookie->SetBottom(&bottoms);
 		cookie->Init();
 	}
 }
 
-void Stage::Release()
+void Episode::Release()
 {
 }
 
-void Stage::Enter()
+void Episode::Enter()
 {
 	worldView.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
 	worldView.setCenter({ WINDOW_WIDTH/2,WINDOW_HEIGHT/2});
 }
 
-void Stage::Exit()
+void Episode::Exit()
 {
 
 }
 
-void Stage::Update(float dt)
+void Episode::Update(float dt)
 {
+	Scene::Update(dt);
 	if (InputMgr::GetKeyDown(Keyboard::Space))
 	{
-		SCENE_MGR->ChangeScene(Scenes::Episode2);
+		//SCENE_MGR->ChangeScene(Scenes::Episode2);
 		return;
 	}
-	Scene::Update(dt);
-}
+} 
 
-void Stage::Draw(RenderWindow& window)
+void Episode::Draw(RenderWindow& window)
 {
 	Scene::Draw(window);
 }
-void Stage::CreateBottom(Vector2f pos, vector<int> btmCnt, int rows)
+void Episode::CreateBottom(Vector2f pos, vector<int> btmCnt, int rows)
 {
 	bool draw = true;
 	int cnt = btmCnt.size();

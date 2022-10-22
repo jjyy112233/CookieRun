@@ -30,8 +30,8 @@ void SpriteObject::SetScale(Vector2f scale)
 
 void SpriteObject::SetPos(Vector2f pos)
 {
-	Object::SetPos(pos);
 	sprite.setPosition(pos);
+	Object::SetPos(pos);
 }
 
 void SpriteObject::Translate(const Vector2f& delta)
@@ -48,4 +48,9 @@ void SpriteObject::SetTexture(Texture& tex)
 void SpriteObject::SetOrigin(Origins origin)
 {
 	Utils::SetOrigin(sprite, origin);
+}
+
+FloatRect SpriteObject::GetGlobalBound()
+{
+	return sprite.getGlobalBounds();
 }
