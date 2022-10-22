@@ -14,11 +14,13 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw(RenderWindow& window);
 	virtual void SetScale(Vector2f scale);
+	void SetSize(Vector2f size);
 	virtual void SetPos(Vector2f pos);
 
-	void Translate(const Vector2f& delta);
+	virtual void Translate(const Vector2f& delta);
 
 	void SetTexture(Texture& tex);
+	void SetColor(Color color);
 	void SetOrigin(Origins origin);
 	FloatRect GetGlobalBound();
 };

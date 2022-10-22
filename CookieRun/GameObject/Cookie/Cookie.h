@@ -3,6 +3,7 @@
 #include "../Animation/Animator.h"
 
 class VertexArrayObj;
+class Obstacle;
 class Cookie : public SpriteObject
 {
 public:
@@ -30,17 +31,24 @@ private:
 	Vector2f velocity;
 	Vector2f gravity;
 	vector<VertexArrayObj*>* bottoms;
+	vector<VertexArrayObj*>* nextBottoms;
+	vector<Obstacle*>* obstacles;
+	vector<Obstacle*>* nextObstacles;
 	VertexArrayObj* nowBottom;
 public:
 	Cookie();
-	void Init();
+	virtual void Init();
 	void SetBottom(vector<VertexArrayObj*>* botm);
+	void NextBottom(vector<VertexArrayObj*>* botm);
+	void SetObstacle(vector<Obstacle*>* obs);
+	void NextObstacle(vector<Obstacle*>* obs);
+	bool ObstaclesHit();
 	bool IsBottomHit();
 	bool IsBottomBodyHit();
 	void SetState(States newState);
-	void Update(float dt);
+	virtual void Update(float dt);
 	void UpdateInput();
-	void Draw(RenderWindow& window);
+	virtual void Draw(RenderWindow& window);
 	void OnBottom();
 	void UpdateRun(float dt);
 	void UpdateJump(float dt);

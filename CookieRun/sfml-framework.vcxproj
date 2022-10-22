@@ -160,6 +160,7 @@
     <ClCompile Include="GameObject\VertexArrayObj.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject\Object.cpp" />
+    <ClCompile Include="GameObject\Obstacle.cpp" />
     <ClCompile Include="Scens\episode\Episode.cpp" />
     <ClCompile Include="Scens\episode\Menu.cpp" />
     <ClCompile Include="Scens\Scene.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Framework\Utils.h" />
     <ClInclude Include="GameObject\Object.h" />
     <ClInclude Include="GameObject\VertexArrayObj.h" />
+    <ClInclude Include="GameObject\Obstacle.h" />
     <ClInclude Include="Scens\episode\Episode.h" />
     <ClInclude Include="Scens\episode\Menu.h" />
     <ClInclude Include="Scens\Scene.h" />

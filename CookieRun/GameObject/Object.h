@@ -31,8 +31,6 @@ protected:
 	float rotation;
 	Vector2f scale;    //부모자식 간의 관계가 있을수도 있지만 그건 일단 우리가 컨테이너로 만들어서 하자
 
-	Vector2f initScale;
-
 	vector<HitBox> hitBoxs;
 	HitBox bottomHitBox;
 public:
@@ -50,6 +48,7 @@ public:
 	virtual const Vector2f& GetPos() const;
 	virtual void AddHitBox(RectangleShape hit, Vector2f pos, bool isBottom = false);
 	virtual void AddHitBox(CircleShape hit, Vector2f pos, bool isBottom = false);
+	virtual void AddHitBox(ConvexShape hit,vector<Vector2f> points, Vector2f pos, bool isBottom = false);
 	virtual const vector<HitBox>* GetHitBox();
 	virtual const HitBox& GetHitBoxBottom();
 

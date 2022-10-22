@@ -4,6 +4,7 @@
 #include "../../Framework/info.h"
 #include "../../Scens/SceneManager.h"
 #include "../../GameObject/VertexArrayObj.h"
+#include "../../GameObject/Obstacle.h"
 
 
  Cookie::Cookie() : currState(States::None), viewPos(nullptr), timer(0.f), jumpTime(0.5f),
@@ -47,6 +48,36 @@ void Cookie::SetBottom(vector<VertexArrayObj*>* botm)
 	bottoms = botm;
 	nowBottom = (*bottoms)[0];
 }
+void Cookie::NextBottom(vector<VertexArrayObj*>* botm)
+{
+	nextBottoms = botm;
+}
+
+void Cookie::SetObstacle(vector<Obstacle*>* obs)
+{
+	obstacles = obs;
+}
+
+void Cookie::NextObstacle(vector<Obstacle*>* obs)
+{
+	nextObstacles = obs;
+}
+
+bool Cookie::ObstaclesHit()
+{
+	for (auto& obs : *obstacles)
+	{
+		auto hitboxs = obs->GetHitBox();
+		for (auto& hit : *hitboxs)
+		{
+			if (hit.shape->getGlobalBounds().intersects(bottomHitBox.shape->getGlobalBounds()))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 bool Cookie::IsBottomHit()
 {
@@ -59,6 +90,16 @@ bool Cookie::IsBottomHit()
 			return true;
 		}
 	}
+	if (nextBottoms != nullptr)
+		for (auto& botm : *nextBottoms)
+		{
+			if (botm->GetGlobalBounds().intersects(bottomHitBox.shape->getGlobalBounds()))
+				//if(botm->GetGlobalBounds().intersects(SpriteObject::GetGlobalBound()))
+			{
+				nowBottom = botm;
+				return true;
+			}
+		}
 	return false;
 }
 
@@ -127,6 +168,10 @@ void Cookie::SetState(States newState)
 void Cookie::Update(float dt)
 {
 	UpdateInput();
+	if (ObstaclesHit())
+	{
+		std::cout << "Hit Obs" << std::endl;
+	}
 
 	if (viewPos == nullptr)
 	{
@@ -181,7 +226,7 @@ void Cookie::UpdateInput()
 		{
 			SetState(States::DoubleJump);
 		}
-		else if(currState == States::Run)
+		else if(currState == States::Run || currState == States::Bottom)
 		{
 			SetState(States::Jump);
 
@@ -219,15 +264,12 @@ void Cookie::UpdateRun(float dt)
 	}
 	else
 	{
-		std::cout << nowBottom->GetGlobalBounds().top << std::endl;
 		if (nowBottom->GetGlobalBounds().top > position.y)
 		{
-			std::cout << "Down" << std::endl;
 		}
 		else
 		{
 			SetState(States::Down);
-			std::cout << "Fall" << std::endl;
 		}
 	}
 }

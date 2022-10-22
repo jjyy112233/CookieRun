@@ -5,14 +5,37 @@ class SpriteObject;
 class BackGround;
 class VertexArrayObj;
 class Cookie;
+class Obstacle;
+
+struct Stage
+{
+	string stageName;
+	Texture* bottomTex;
+	vector<BackGround*> backs; // 배경 정보
+	vector<VertexArrayObj*> bottoms;
+	vector<Obstacle*> obstacles;
+	vector<int> bottomArray;
+	bool isActive;
+
+	void SetAcitve(bool active);
+	bool GetActive()
+	{
+		return isActive;
+	}
+	bool isEnd();
+	void Move();
+	void SetBackGround(int i);
+};
+
 class Episode : public Scene
 {
 protected:
-	string stageName;
-	Texture* bottom;
-	vector<BackGround*> back; // 배경 정보
-	vector<vector<IntRect>> rects;
-	vector<VertexArrayObj*> bottoms;
+	int currStageIdx;
+	Stage* currStage;
+	string currStageName;
+
+	vector<Stage*> stages;
+
 	Cookie* cookie;
 
 	float botmW;
@@ -27,6 +50,9 @@ public:
 	virtual void Exit() override;
 	virtual void Update(float dt) override;
 	virtual void Draw(RenderWindow& window) override;
-	void CreateBottom(Vector2f pos, vector<int> btmCnt, int rows);
+	virtual void SetStage(int idx);
+	virtual void test();
+	void CreateBottom(Vector2f pos, Stage* stage);
+	void SetBackGround(Stage* prev, Stage* now);
 };
 

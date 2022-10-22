@@ -25,7 +25,12 @@ void SpriteObject::Draw(RenderWindow& window)
 
 void SpriteObject::SetScale(Vector2f scale)
 {
-	sprite.setScale(scale);
+	sprite.setScale({ scale });
+}
+void SpriteObject::SetSize(Vector2f size)
+{
+	auto bound = sprite.getGlobalBounds();
+	sprite.setScale({ size.x / bound.width,size.y / bound.height });
 }
 
 void SpriteObject::SetPos(Vector2f pos)
@@ -42,7 +47,10 @@ void SpriteObject::Translate(const Vector2f& delta)
 void SpriteObject::SetTexture(Texture& tex)
 {
 	sprite.setTexture(tex,true);
-	sprite.setScale(initScale);
+}
+void SpriteObject::SetColor(Color color)
+{
+	sprite.setColor(color);
 }
 
 void SpriteObject::SetOrigin(Origins origin)

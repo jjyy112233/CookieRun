@@ -14,15 +14,15 @@ enum class Scenes
 };
 enum class LayerType
 {
-	None, Back,Bottom, Object, Player, Pet, UI
+	None, Back,Bottom, Object, Cookie, Pet, UI
 };
 class Scene
 {
 protected:
 	Scenes type;
 
-	map<LayerType, map<int, Object*>> objList;
-	map<LayerType, map<int, Object*>> uiObjList;
+	map<LayerType, map<int, vector<Object*>>> objList;
+	map<LayerType, map<int, vector<Object*>>> uiObjList;
 
 	View worldView;
 	View uiView;

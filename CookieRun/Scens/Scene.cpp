@@ -38,8 +38,18 @@ void Scene::Update(float dt)
 	{
 		for (auto& obj_pair : layer.second)
 		{
-			auto obj = obj_pair.second;
-			obj->Update(dt);
+			auto objs = obj_pair.second;
+
+			for (auto& obj : objs)
+			{
+				if (obj->GetActive())
+				{
+					obj->Update(dt);
+					if (layer.first == LayerType::Cookie)
+						continue;
+					obj->Translate(Vector2f{ -1.f,0 } * viewSpeed * dt);
+				}
+			}
 		}
 	}
 
@@ -47,14 +57,14 @@ void Scene::Update(float dt)
 	{
 		for (auto& ui_pair : layer.second)
 		{
-			auto ui = ui_pair.second;
-			ui->Update(dt);
+			auto uis = ui_pair.second;
+			for (auto& ui : uis)
+			{
+				if(ui->GetActive())
+					ui->Update(dt);
+			}
 		}
 	}
-
-
-	worldView.setCenter(worldView.getCenter() + Vector2f{dt* viewSpeed, 0});
-
 }
 
 void Scene::Draw(RenderWindow& window)
@@ -64,8 +74,14 @@ void Scene::Draw(RenderWindow& window)
 	{
 		for (auto& obj_pair : layer.second)
 		{
-			auto obj = obj_pair.second;
-			obj->Draw(window);
+			auto objs = obj_pair.second;
+			for (auto& obj : objs)
+			{
+				if (obj->GetActive())
+				{
+					obj->Draw(window);
+				}
+			}
 		}
 	}
 
@@ -73,8 +89,14 @@ void Scene::Draw(RenderWindow& window)
 	{
 		for (auto& ui_pair : layer.second)
 		{
-			auto ui = ui_pair.second;
-			ui->Draw(window);
+			auto uis = ui_pair.second;
+			for (auto& ui : uis)
+			{
+				if (ui->GetActive())
+				{
+					ui->Draw(window);
+				}
+			}
 		}
 	}
 }

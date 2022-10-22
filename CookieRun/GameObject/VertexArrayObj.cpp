@@ -63,11 +63,20 @@ Origins VertexArrayObj::GetOrigin() const
 
 void VertexArrayObj::Update(float dt)
 {
+    if (enabled)
+    {
+    }
 }
-
+void VertexArrayObj::SetActive(bool active)
+{
+    Object::SetActive(active);
+}
 void VertexArrayObj::Draw(RenderWindow& window)
 {
-    window.draw(vertexArray, texture);
+    if (enabled)
+    {
+        window.draw(vertexArray, texture);
+    }
 }
 
 FloatRect VertexArrayObj::GetGlobalBounds() const

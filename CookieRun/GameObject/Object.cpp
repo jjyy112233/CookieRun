@@ -5,7 +5,6 @@
 Object::Object()
 {
 	Init();
-	Init();
 }
 
 Object::~Object()
@@ -25,7 +24,7 @@ void Object::SetActive(bool active)
 
 void Object::Init()
 {
-	initScale = { 2.f, 2.f };
+	enabled = true;
 }
 
 void Object::Release()
@@ -61,7 +60,6 @@ void Object::AddHitBox(RectangleShape hitbox, Vector2f pos, bool isBottom)
 	HitBox hit = HitBox();
 	hit.initPos = pos;
 	hit.shape = new RectangleShape(hitbox);
-	Utils::SetOrigin(*hit.shape, Origins::BC);
 	hit.shape->setFillColor(Color::Red);
 	hit.initPos = pos;
 	hit.SetPos(position);
@@ -70,6 +68,7 @@ void Object::AddHitBox(RectangleShape hitbox, Vector2f pos, bool isBottom)
 
 	if (isBottom)
 		bottomHitBox = hit;
+	Utils::SetOrigin(*hit.shape, Origins::BC);
 }
 void Object::AddHitBox(CircleShape hitbox, Vector2f pos, bool isBottom)
 {
@@ -80,6 +79,33 @@ void Object::AddHitBox(CircleShape hitbox, Vector2f pos, bool isBottom)
 	hit.shape->setFillColor(Color::Red);
 	hit.initPos = pos;
 	hit.SetPos(position);
+
+	hitBoxs.push_back(hit);
+	if (isBottom)
+		bottomHitBox = hit;
+}
+void Object::AddHitBox(ConvexShape hitbox, vector<Vector2f> points, Vector2f pos, bool isBottom)
+{
+
+	HitBox hit = HitBox();
+
+	hitbox.setPointCount(points.size());
+	int idx = 0;
+	for (auto& point : points)
+	{
+		hitbox.setPoint(idx, point);
+		idx++;
+	}
+
+	hit.shape = new ConvexShape(hitbox);
+
+	hit.SetPos(position);
+
+	Utils::SetOrigin(*hit.shape, Origins::BC);
+
+
+	hit.shape->setFillColor(Color(255,0,0,120));
+	hit.initPos = pos;
 
 	hitBoxs.push_back(hit);
 	if (isBottom)
@@ -98,6 +124,7 @@ const HitBox& Object::GetHitBoxBottom()
 
 void Object::Update(float dt)
 {
+
 }
 
 void Object::Draw(RenderWindow& window)
