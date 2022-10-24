@@ -27,7 +27,6 @@ private:
 	const Vector2f* viewPos;
 
 	float timer;
-	float jumpTime;
 	Vector2f velocity;
 	Vector2f gravity;
 	vector<VertexArrayObj*>* bottoms;
@@ -35,6 +34,8 @@ private:
 	vector<Obstacle*>* obstacles;
 	vector<Obstacle*>* nextObstacles;
 	VertexArrayObj* nowBottom;
+
+	float height;
 public:
 	Cookie();
 	virtual void Init();

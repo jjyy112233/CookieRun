@@ -25,7 +25,6 @@ Episode::~Episode()
 void Episode::Init()
 {
 	auto episodeData = FILE_MGR->GetEpisode("episode1");
-	string stageName[] = {"stage1", "stage2"};
 	int i = 0;
 	for (auto& pair : episodeData)
 	{
@@ -58,10 +57,8 @@ void Episode::Init()
 				Obstacle* obs = new Obstacle;
 				obs->SetTexture(*RESOURCES_MGR->GetTexture(path));
 				obs->SetPos(obsPos);
-
-				ConvexShape shape;
-				vector<Vector2f> points = { {0,99},{63,99},{31,0} };
-				obs->AddHitBox(shape, points, { 0,0 });
+				auto points = FILE_MGR->GetHitBox(path);
+				obs->AddHitBox(FILE_MGR->GetHitBox(path), obsPos);
 
 				objList[LayerType::Object][0].push_back(obs);
 				stage->obstacles.push_back(obs);

@@ -7,7 +7,7 @@
 #include "../../GameObject/Obstacle.h"
 
 
- Cookie::Cookie() : currState(States::None), viewPos(nullptr), timer(0.f), jumpTime(0.5f),
+ Cookie::Cookie() : currState(States::None), viewPos(nullptr), timer(0.f),
 	velocity(0.f,-1000.f), gravity(0.f,3000.f)
 {
 
@@ -23,9 +23,9 @@ void Cookie::Init()
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Slide"));
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Down"));
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Bottom"));
+
 	SetState(States::Run);
-	SetOrigin(Origins::BC);
-	jumpTime = 0.f;
+	SetOrigin(Origins::TL);
 
 	{
 		auto down = *RESOURCES_MGR->GetAnimationClip("Bottom");
@@ -36,9 +36,9 @@ void Cookie::Init()
 		animator.AddEvent(ev);
 	}
 
-	AddHitBox(RectangleShape({ 40.f,28.f }), { 0,0 }, true);
-	AddHitBox(RectangleShape({ 45.f,52.f }), { 22,-16 });
-	AddHitBox(CircleShape(38), { 40,-52 });
+	AddHitBox(RectangleShape({ 40,10 }), { 180,354 }, true);
+	AddHitBox(RectangleShape({ 45.f,52.f }), { 176,300 });
+	AddHitBox(CircleShape(38), { 186,234 });
 }
 
 
@@ -161,11 +161,12 @@ void Cookie::SetState(States newState)
 	default:
 		break;
 	}
-
+	height = sprite.getGlobalBounds().height;
 }
 
 void Cookie::Update(float dt)
 {
+	cout << position.y << endl;
 	UpdateInput();
 	if (ObstaclesHit())
 	{
@@ -256,14 +257,14 @@ void Cookie::OnBottom()
 
 void Cookie::UpdateRun(float dt)
 {
-	SetPos({ viewPos->x - 400.f,position.y + dt * 500.f });
+	SetPos({ viewPos->x - 400.f, position.y + dt * 500.f });
 	if (IsBottomHit())
 	{
-		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top});
+		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height});
 	}
 	else
 	{
-		if (nowBottom->GetGlobalBounds().top > position.y)
+		if (nowBottom->GetGlobalBounds().top > position.y + height)
 		{
 		}
 		else
@@ -280,13 +281,19 @@ void Cookie::UpdateJump(float dt)
 	Translate(delta);
 	SetPos({ viewPos->x - 400.f,position.y });
 
+
+	if (nowBottom->GetGlobalBounds().top < position.y + height)
+	{
+		//SetState(States::Down);
+	}
 	if (IsBottomHit())
 	{
+		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
 		SetState(States::Bottom);
-		SetPos({ viewPos->x - 400.f,  position.y });
 		velocity = Vector2f(0.f, -1000.f);
 		gravity = Vector2f(0.f, 3000.f);
 	}
+	cout << position.y << endl;
 
 }
 
@@ -301,19 +308,23 @@ void Cookie::UpdateDoubleJump(float dt)
 	{
 		animator.Play("Down");
 	}
+	if (nowBottom->GetGlobalBounds().top < position.y + height)
+	{
+		//SetState(States::Down);
+	}
 	if (IsBottomHit())
 	{
 		SetState(States::Bottom);
 		velocity = Vector2f(0.f, -1000.f);
 		gravity = Vector2f(0.f, 3000.f);
-		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top });
+		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
 	}
 	//std::cout << position.y << std::endl;
 }
 
 void Cookie::UpdateSlide(float dt)
 {
-	SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top });
+	SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
 }
 
 void Cookie::UpdateDash(float dt)
@@ -331,7 +342,7 @@ void Cookie::UpdateDown(float dt)
 
 void Cookie::UpdateBottom(float dt)
 {
-	SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top });
+	SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
 }
 
 void Cookie::UpdateFly(float dt)

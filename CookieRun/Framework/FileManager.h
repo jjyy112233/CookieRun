@@ -15,6 +15,7 @@ public:
 
 	void LoadAll();
 	const map<string, MapData>& GetEpisode(string name);
+	const HitBoxInfo& GetHitBox(string name);
 };
 
 #define FILE_MGR (FileManager::GetInstance())

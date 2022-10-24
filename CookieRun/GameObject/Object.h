@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "../Framework/FileManager.h"
 
 #include <list>
 
@@ -46,6 +47,8 @@ public:
 	virtual void SetPos(const Vector2f& pos);
 	void Translate(const Vector2f& delta);
 	virtual const Vector2f& GetPos() const;
+	virtual void AddHitBox(const HitBoxInfo& hit, Vector2f pos);
+	virtual void AddHitBox(const CookieHitBox& hit, Vector2f pos);
 	virtual void AddHitBox(RectangleShape hit, Vector2f pos, bool isBottom = false);
 	virtual void AddHitBox(CircleShape hit, Vector2f pos, bool isBottom = false);
 	virtual void AddHitBox(ConvexShape hit,vector<Vector2f> points, Vector2f pos, bool isBottom = false);

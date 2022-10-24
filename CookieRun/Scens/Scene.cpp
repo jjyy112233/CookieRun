@@ -3,7 +3,7 @@
 #include "../GameObject/Object.h"
 #include "../Framework/Framework.h"
 
-Scene::Scene(Scenes type) :type(type), viewSpeed(800.f), initViewSpeed(500.f)
+Scene::Scene(Scenes type) :type(type), viewSpeed(800.f), initViewSpeed(800.f)
 {
 }
 

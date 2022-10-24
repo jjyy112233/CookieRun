@@ -32,3 +32,26 @@ void ns::from_json(const json& j, CircleInfo& c)
     j.at("rad").get_to(c.rad);
     j.at("pos").get_to(c.pos);
 }
+
+void ns::to_json(json& j, const RectangleInfo& c)
+{
+    j = json{ {"size", c.size}, {"pos", c.pos} };
+}
+
+void ns::from_json(const json& j, RectangleInfo& c)
+{
+    j.at("size").get_to(c.size);
+    j.at("pos").get_to(c.pos);
+}
+
+void ns::to_json(json& j, const ConvexInfo& c)
+{
+    j = json{ {"points", c.points} };
+    j = json{ {"pos", c.pos} };
+}
+
+void ns::from_json(const json& j, ConvexInfo& c)
+{
+    j.at("points").get_to(c.points);
+    j.at("pos").get_to(c.pos);
+}

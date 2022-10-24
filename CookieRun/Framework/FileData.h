@@ -32,6 +32,26 @@ namespace ns {
 }
 
 namespace ns {
+	struct RectangleInfo
+	{
+		sf::Vector2f size;
+		sf::Vector2f pos;
+	};
+	void to_json(json& j, const RectangleInfo& c);
+	void from_json(const json& j, RectangleInfo& c);
+}
+
+namespace ns {
+	struct ConvexInfo
+	{
+		vector<sf::Vector2f> points;
+		sf::Vector2f pos;
+	};
+	void to_json(json& j, const ConvexInfo& c);
+	void from_json(const json& j, ConvexInfo& c);
+}
+
+namespace ns {
 	struct BackInfo
 	{
 		string path;
@@ -54,17 +74,17 @@ namespace ns {
 	{
 		string id;
 		vector<ns::CircleInfo> circles;    // rad, pos
-		vector<sf::Vector2f> rectangls;  //  size , pos
-		vector <sf::Vector2f> points; //point
+		vector<ns::RectangleInfo> rectangls;  //  size , pos
+		vector <ns::ConvexInfo> points; //point
 		NLOHMANN_DEFINE_TYPE_INTRUSIVE(HitBoxInfo, id, circles, rectangls, points)
 	};
 
 	struct CookieHitBox
 	{
 		string type;
-		vector<ns::CircleInfo> circles;    // rad, pos
-		vector<sf::Vector2f> rectangls;  //  size , pos
-		vector <sf::Vector2f> points; //point
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CookieHitBox, type, circles, rectangls, points)
+		HitBoxInfo hitBox;
+		ns::RectangleInfo bottom;
+		
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CookieHitBox, hitBox, bottom)
 	};
 
