@@ -36,9 +36,9 @@ bool SceneManager::Init()
 	LoadPath();
 
 	sceneMap[Scenes::Menu] = new Menu();
-	sceneMap[Scenes::Episode1] = new Episode();
-	sceneMap[Scenes::Episode2] = new Episode();
-	sceneMap[Scenes::Episode3] = new Episode();
+	sceneMap[Scenes::Episode1] = new Episode("config/data/episode1.json");
+	sceneMap[Scenes::Episode2] = new Episode("config/data/episode1.json");
+	sceneMap[Scenes::Episode3] = new Episode("config/data/episode1.json");
 
 	//for (auto& scene : sceneMap)
 	//{

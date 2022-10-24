@@ -9,9 +9,10 @@
 #include "../../GameObject/VertexArrayObj.h"
 #include "../../GameObject/Cookie/Cookie.h"
 #include "../../GameObject/Obstacle.h"
+#include "../../Framework/FileManager.h"
 
-Episode::Episode()
-	:Scene(Scenes::Episode1)
+Episode::Episode(string dataPath)
+	:Scene(Scenes::Episode1), dataPath(dataPath)
 {
     botmW = 124.f;
     botmH = 200.f;
@@ -23,67 +24,51 @@ Episode::~Episode()
 
 void Episode::Init()
 {
+	auto episodeData = FILE_MGR->GetEpisode("episode1");
+	string stageName[] = {"stage1", "stage2"};
+	int i = 0;
+	for (auto& pair : episodeData)
 	{
+		auto stageInfo = pair.second;
+
 		Stage* stage = new Stage();
 		stages.push_back(stage);
 
-		BackGround* back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/stage1/back0.png"), 0.f);
-		stage->backs.push_back(back);
+		vector<ns::BackInfo>  backInfo = stageInfo.backInfo;
 
-		back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/stage1/back1.png"), 50.f);
-		stage->backs.push_back(back);
-
-        stage->bottomTex = RESOURCES_MGR->GetTexture("graphics/episode1/stage1/block0.png");
-		stage->bottomArray = { 10,1,10,1,10,1,10,1,10,1,10 };
+		for (auto& info : backInfo)
+		{
+			BackGround* back = new BackGround(RESOURCES_MGR->GetTexture(info.path), info.speed);
+			stage->backs.push_back(back);
+		}
+		stage->bottomTex = RESOURCES_MGR->GetTexture(stageInfo.bottomPath);
+		stage->bottomArray = stageInfo.bottomPos;
 		CreateBottom({ 0.f,0.f }, stage);
 		stage->SetBackGround((int)BackGround::BackState::Enable);
 
-		Obstacle* obs = new Obstacle;
-		obs->SetTexture(*RESOURCES_MGR->GetTexture("graphics/episode1/stage1/obstacle0.png"));
-		obs->SetPos({ 1240,540 });
 
-		ConvexShape shape;
-		vector<Vector2f> points = { {0,99},{63,99},{31,0} };
-		obs->AddHitBox(shape, points, { 0,0 });
+		map<string, vector<sf::Vector2f>> obstacles = stageInfo.obstacles;
+		
+		for (auto& obsInfo : obstacles)
+		{
+			string path = obsInfo.first;
 
-		objList[LayerType::Object][0].push_back(obs);
-		stage->obstacles.push_back(obs);
+			for (auto& obsPos : obsInfo.second)
+			{
+				Obstacle* obs = new Obstacle;
+				obs->SetTexture(*RESOURCES_MGR->GetTexture(path));
+				obs->SetPos(obsPos);
 
-		stage->SetAcitve(false);
-	}
+				ConvexShape shape;
+				vector<Vector2f> points = { {0,99},{63,99},{31,0} };
+				obs->AddHitBox(shape, points, { 0,0 });
 
-	{
-		Stage* stage = new Stage();
-		stages.push_back(stage);
-
-		BackGround* back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/stage2/back0.png"), 0.f);
-		stage->backs.push_back(back);
-
-		back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/stage2/back1.png"), 50.f);
-		stage->backs.push_back(back);
-
-		back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/stage2/back2.png"), 70.f);
-		stage->backs.push_back(back);
-
-		back = new BackGround(RESOURCES_MGR->GetTexture("graphics/episode1/stage2/back3.png"), 100.f);
-		stage->backs.push_back(back);
-
-		stage->bottomTex = RESOURCES_MGR->GetTexture("graphics/episode1/stage2/block0.png");
-		stage->bottomArray = { 10,1,10,1,100 };
-		CreateBottom({ 0.f,0.f }, stage);
-
-		Obstacle* obs = new Obstacle;
-		obs->SetTexture(*RESOURCES_MGR->GetTexture("graphics/episode1/stage1/obstacle0.png"));
-		obs->SetPos({ 124,540 });
-
-		ConvexShape shape;
-		vector<Vector2f> points = { {0,99},{63,99},{31,0} };
-		obs->AddHitBox(shape, points, { 0,0 });
-
-		objList[LayerType::Object][0].push_back(obs);
-		stage->obstacles.push_back(obs);
-
-		stage->SetAcitve(false);
+				objList[LayerType::Object][0].push_back(obs);
+				stage->obstacles.push_back(obs);
+				stage->SetAcitve(false);
+			}
+		}
+		i++;
 	}
 
 	{

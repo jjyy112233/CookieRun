@@ -33,6 +33,7 @@ protected:
 	int currStageIdx;
 	Stage* currStage;
 	string currStageName;
+	string dataPath;
 
 	vector<Stage*> stages;
 
@@ -42,7 +43,7 @@ protected:
 	float botmH;
 	
 public:
-	Episode();
+	Episode(string dataPath);
 	~Episode();
 	virtual void Init() override;
 	virtual void Release() override;

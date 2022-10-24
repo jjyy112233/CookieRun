@@ -8,6 +8,7 @@
 #include "SoundManager.h"
 #include "FileManager.h"
 
+
 Framework::Framework()
     :timeScale(1.f)
 {
@@ -31,6 +32,7 @@ float Framework::GetRealDT() const
 
 bool Framework::Init()
 {
+    FILE_MGR->LoadAll();
     RESOURCES_MGR->LoadAll();
     SOUND_MGR->Init();
     DATATABLE_MGR->Init();

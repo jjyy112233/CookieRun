@@ -6,17 +6,17 @@
 BackGround::BackGround(Texture* tex, float spd)
 {
 	SetTexture(*tex);
-	SetScale({ 2,2 });
+	SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
 	width = (int)sprite.getGlobalBounds().width;
 	height = (int)sprite.getGlobalBounds().height;
 	speed = spd;
 
 	right.SetTexture(*tex);
-	right.SetScale({ 2,2 });
+	right.SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
 	right.SetPos({ (float)width, 0.f });
 
 	right2.SetTexture(*tex);
-	right2.SetScale({ 2,2 });
+	right2.SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
 	right2.SetPos({ (float) + width*2.f, 0.f});
 
 	SetColor(Color::Black);

@@ -1,6 +1,6 @@
 #pragma once
 #define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 640
+#define WINDOW_HEIGHT 720
 #define INFO_PATH config/gameInfo.csv
 #define PRINT(STR) std::cout<<STR<<std::endl
 #define RESOURCES_CSV "resources.csv"
