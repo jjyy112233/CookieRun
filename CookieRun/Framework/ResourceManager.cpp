@@ -38,7 +38,6 @@ bool ResourceManager::LoadAll()
     ReleaseAll();
     rapidcsv::Document doc(FilePath, rapidcsv::LabelParams(0, -1));
 
-    Vector2i startPos = { 2,17 };
     auto ids = doc.GetColumn<string>(0);
     auto types = doc.GetColumn<int>(1);
 

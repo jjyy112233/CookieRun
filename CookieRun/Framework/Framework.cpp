@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include "../DataTable/DataTableMGR.h"
 #include "SoundManager.h"
+#include "FileManager.h"
 
 Framework::Framework()
     :timeScale(1.f)

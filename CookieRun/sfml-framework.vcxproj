@@ -146,6 +146,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Framework\FileManager.cpp" />
     <ClCompile Include="GameObject\Cookie\Cookie.cpp" />
     <ClCompile Include="GameObject\BackGround\BackGround.cpp" />
     <ClCompile Include="DataTable\DataTable.cpp" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Framework\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Framework\FileManager.h" />
     <ClInclude Include="GameObject\Cookie\Cookie.h" />
     <ClInclude Include="GameObject\BackGround\BackGround.h" />
     <ClInclude Include="DataTable\DataTable.h" />

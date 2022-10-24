@@ -27,7 +27,6 @@ void Cookie::Init()
 	SetOrigin(Origins::BC);
 	jumpTime = 0.f;
 
-
 	{
 		auto down = *RESOURCES_MGR->GetAnimationClip("Bottom");
 		AnimationEvent ev;

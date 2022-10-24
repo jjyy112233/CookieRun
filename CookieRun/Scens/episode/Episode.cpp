@@ -34,7 +34,7 @@ void Episode::Init()
 		stage->backs.push_back(back);
 
         stage->bottomTex = RESOURCES_MGR->GetTexture("graphics/episode1/stage1/block0.png");
-		stage->bottomArray = { 10,1,10 };
+		stage->bottomArray = { 10,1,10,1,10,1,10,1,10,1,10 };
 		CreateBottom({ 0.f,0.f }, stage);
 		stage->SetBackGround((int)BackGround::BackState::Enable);
 
@@ -69,7 +69,7 @@ void Episode::Init()
 		stage->backs.push_back(back);
 
 		stage->bottomTex = RESOURCES_MGR->GetTexture("graphics/episode1/stage2/block0.png");
-		stage->bottomArray = { 10,1,10 };
+		stage->bottomArray = { 10,1,10,1,100 };
 		CreateBottom({ 0.f,0.f }, stage);
 
 		Obstacle* obs = new Obstacle;

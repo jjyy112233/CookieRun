@@ -1,0 +1,1 @@
+graphics/episode1/stage1/obstacle0.png convex 0,99 63,99 31,0

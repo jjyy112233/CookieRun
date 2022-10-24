@@ -1,0 +1,7 @@
+graphics/episode1/stage1/back0.png 0 graphics/episode1/stage1/back1.png 50
+graphics/episode1/stage1/block0.png 10,1,10,1,10,1,10
+graphics/episode1/stage1/obstacle0.png 1240, 540 1116,540
+
+"graphics/episode1/stage2/back0.png" 0 "graphics/episode1/stage2/back1.png" 50 "graphics/episode1/stage2/back2.png" 70 "graphics/episode1/stage2/back3.png" 100
+graphics/episode1/stage2/block0.png  10,1,10
+"graphics/episode1/stage2/obstacle0.png" 124,540 248,540
