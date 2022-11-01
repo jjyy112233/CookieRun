@@ -6,7 +6,7 @@ class BackGround;
 class VertexArrayObj;
 class Cookie;
 class Obstacle;
-
+class Jelly;
 struct Stage
 {
 	string stageName;
@@ -14,6 +14,7 @@ struct Stage
 	vector<BackGround*> backs; // 배경 정보
 	vector<VertexArrayObj*> bottoms;
 	vector<Obstacle*> obstacles;
+	vector<Jelly*> jelly;
 	vector<int> bottomArray;
 	bool isActive;
 
@@ -32,8 +33,8 @@ class Episode : public Scene
 protected:
 	int currStageIdx;
 	Stage* currStage;
+	string currEpisodeName;
 	string currStageName;
-	string dataPath;
 
 	vector<Stage*> stages;
 
@@ -41,6 +42,13 @@ protected:
 
 	float botmW;
 	float botmH;
+
+	bool isEnding;
+	bool isFail;
+	bool isTimeOut;
+	float failTimer;;
+
+	int point;
 	
 public:
 	Episode(string dataPath);
@@ -49,11 +57,20 @@ public:
 	virtual void Release() override;
 	virtual void Enter() override;
 	virtual void Exit() override;
+	void Reset();
 	virtual void Update(float dt) override;
 	virtual void Draw(RenderWindow& window) override;
 	virtual void SetStage(int idx);
 	virtual void test();
 	void CreateBottom(Vector2f pos, Stage* stage);
 	void SetBackGround(Stage* prev, Stage* now);
+	bool GetIsEnd() { return isEnding; }
+	void SetEiosodeName(string name) { currEpisodeName = name; }
+	void SetIsFail(bool state);
+	void SetTimeOut(bool state);
+	void SetScene(Scenes scene);
+	Vector2f GetCookiePos();
+	void CookieIsFail();
+	void AddPoint(int point);
 };
 

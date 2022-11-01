@@ -3,12 +3,42 @@
 #include "../GameObject/Object.h"
 #include "../Framework/Framework.h"
 
-Scene::Scene(Scenes type) :type(type), viewSpeed(800.f), initViewSpeed(800.f)
+Scene::Scene(Scenes type) :type(type), viewSpeed(800.f), initViewSpeed(800.f), uiMgr(nullptr)
 {
 }
 
 Scene::~Scene()
 {
+	Release();
+}
+
+void Scene::Reset()
+{
+}
+
+void Scene::Release()
+{
+	for (auto& layer : objList)
+	{
+		for (auto& obj_pair : layer.second)
+		{
+			auto objs = obj_pair.second;
+
+			for (auto& obj : objs)
+			{
+				if(obj != nullptr)
+					delete obj;
+			}
+			objs.clear();
+		}
+		layer.second.clear();
+	}
+	objList.clear();
+	//if (uiMgr != nullptr)
+	//{
+	//	delete uiMgr;
+	//	uiMgr = nullptr;
+	//}
 }
 
 void Scene::SetViewStop()
@@ -47,24 +77,16 @@ void Scene::Update(float dt)
 					obj->Update(dt);
 					if (layer.first == LayerType::Cookie)
 						continue;
+					if (layer.first == LayerType::Back)
+						continue;
 					obj->Translate(Vector2f{ -1.f,0 } * viewSpeed * dt);
 				}
 			}
 		}
 	}
 
-	for (auto& layer : uiObjList)
-	{
-		for (auto& ui_pair : layer.second)
-		{
-			auto uis = ui_pair.second;
-			for (auto& ui : uis)
-			{
-				if(ui->GetActive())
-					ui->Update(dt);
-			}
-		}
-	}
+	if(uiMgr != nullptr)
+		uiMgr->Update(dt);
 }
 
 void Scene::Draw(RenderWindow& window)
@@ -85,18 +107,30 @@ void Scene::Draw(RenderWindow& window)
 		}
 	}
 
-	for (auto& layer : uiObjList)
+	if(uiMgr != nullptr)
+		uiMgr->Draw(window);
+}
+
+void Scene::AddGameObject(Object* obj, LayerType type, int num)
+{
+	objList[type][num].push_back(obj);
+}
+
+Object* Scene::FindGameObj(string name)
+{
+	for (auto& layer : objList)
 	{
-		for (auto& ui_pair : layer.second)
+		for (auto& obj_pair : layer.second)
 		{
-			auto uis = ui_pair.second;
-			for (auto& ui : uis)
+			auto objs = obj_pair.second;
+			for (auto& obj : objs)
 			{
-				if (ui->GetActive())
+				if (obj->GetName() == name)
 				{
-					ui->Draw(window);
+					return obj;
 				}
 			}
 		}
 	}
+
 }

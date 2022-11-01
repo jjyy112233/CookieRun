@@ -1,9 +1,11 @@
 #include "Object.h"
 #include "../Framework/Utils.h"
+#include "../Framework/InputMgr.h"
 #define DEBUG
 
 Object::Object()
 {
+	hitDraw = false;
 	Init();
 }
 
@@ -35,6 +37,10 @@ void Object::Release()
 			delete hitbox.shape;
 	}
 	hitBoxs.clear();
+}
+
+void Object::Reset()
+{
 }
 
 void Object::SetPos(const Vector2f& pos)
@@ -144,6 +150,24 @@ void Object::AddHitBox(ConvexShape hitbox, vector<Vector2f> points, Vector2f pos
 		bottomHitBox = hit;
 }
 
+void Object::AddHitBox(Shape*  hitbox, Vector2f initPos)
+{
+	HitBox hit = HitBox();
+
+	hit.shape = hitbox;
+	hit.initPos = initPos;
+	hit.SetPos(position);
+	hit.shape->setFillColor(Color(255, 0, 0, 120));
+	hitBoxs.push_back(hit);
+}
+
+void Object::AddHitBox(HitBox hit)
+{
+	hit.SetPos(position);
+	hit.shape->setFillColor(Color(255, 0, 0, 120));
+	hitBoxs.push_back(hit);
+}
+
 const vector<HitBox>* Object::GetHitBox()
 {
 	return &hitBoxs;
@@ -156,11 +180,19 @@ const HitBox& Object::GetHitBoxBottom()
 
 void Object::Update(float dt)
 {
-
+	if (InputMgr::GetKeyDown(Keyboard::F12))
+	{
+		hitDraw = false;
+	}
+	if (InputMgr::GetKeyDown(Keyboard::F11))
+	{
+		hitDraw = true;
+	}
 }
 
 void Object::Draw(RenderWindow& window)
 {
+	if(enabled && hitDraw)
 	for (auto& hitbox : hitBoxs)
 	{
 		window.draw(*hitbox.shape);

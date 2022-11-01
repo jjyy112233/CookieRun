@@ -3,6 +3,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include "../Ui/UiMgr.h"
 
 using namespace sf;
 using namespace std;
@@ -10,11 +11,11 @@ using namespace std;
 class Object;
 enum class Scenes
 {
-	None = -1, Menu,Episode1,Episode2,Episode3, Count
+	None = -1, Menu,Ready,Episode,EpisodeList, EditorList,Editor, Count
 };
 enum class LayerType
 {
-	None, Back,Bottom, Object, Cookie, Pet, UI
+	None, Back,Bottom, Object, Cookie, Pet
 };
 class Scene
 {
@@ -22,7 +23,6 @@ protected:
 	Scenes type;
 
 	map<LayerType, map<int, vector<Object*>>> objList;
-	map<LayerType, map<int, vector<Object*>>> uiObjList;
 
 	View worldView;
 	View uiView;
@@ -30,6 +30,7 @@ protected:
 	float viewSpeed;
 	float initViewSpeed;
 
+	UiMgr* uiMgr;
 public:
 	Scene(Scenes type);
 	virtual ~Scene();
@@ -37,7 +38,8 @@ public:
 	virtual void Enter() = 0;
 	virtual void Exit() = 0;
 	virtual void Init() = 0;
-	virtual void Release() = 0;
+	virtual void Reset();
+	virtual void Release();
 
 	View& GetWorldView() { return worldView; }
 	View& GetUiView() { return uiView; }
@@ -49,5 +51,10 @@ public:
 
 	virtual void Update(float dt);
 	virtual void Draw(RenderWindow& window);
+
+	void AddGameObject(Object* obj, LayerType type, int num);
+	Object* FindGameObj(string name);
+	UiMgr* GetUiMgr() { return uiMgr; }
+	float GetViewSpeed() { return viewSpeed; }
 };
 

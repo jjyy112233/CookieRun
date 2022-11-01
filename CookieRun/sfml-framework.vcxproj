@@ -146,6 +146,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ui\Custom\EditorBtn.cpp" />
+    <ClCompile Include="Scens\customScene\EditorChoice.cpp" />
+    <ClCompile Include="Ui\Episode\GameEndButton.cpp" />
+    <ClCompile Include="Ui\Episode\GameEnd.cpp" />
+    <ClCompile Include="Ui\Episode\EpisodeUiMgr.cpp" />
+    <ClCompile Include="GameObject\Jelly.cpp" />
+    <ClCompile Include="Ui\Ready\EpisodeBtn.cpp" />
+    <ClCompile Include="Scens\episode\EpisodeChoice.cpp" />
+    <ClCompile Include="Scens\episode\Ending.cpp" />
+    <ClCompile Include="Scens\episode\Ready.cpp" />
+    <ClCompile Include="Ui\Menu\MenuButton.cpp" />
+    <ClCompile Include="Ui\Menu\MenuUiMgr.cpp" />
+    <ClCompile Include="Ui\Custom\CustonPageObject.cpp" />
+    <ClCompile Include="Ui\Custom\CustomPage.cpp" />
+    <ClCompile Include="Ui\Custom\LeftObject.cpp" />
+    <ClCompile Include="Ui\Ready\ReadyButton.cpp" />
+    <ClCompile Include="Ui\Ready\ReadyUiMgr.cpp" />
+    <ClCompile Include="Ui\UiObject.cpp" />
+    <ClCompile Include="Ui\Custom\CustomSceneMgr.cpp" />
+    <ClCompile Include="Framework\Utils.cpp" />
+    <ClCompile Include="Ui\Custom\LeftUi.cpp" />
+    <ClCompile Include="Ui\Button.cpp" />
+    <ClCompile Include="Scens\customScene\CustomScene.cpp" />
     <ClCompile Include="Framework\FileData.cpp" />
     <ClCompile Include="Framework\FileManager.cpp" />
     <ClCompile Include="GameObject\Cookie\Cookie.cpp" />
@@ -158,7 +181,6 @@
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\InputMgr.cpp" />
     <ClCompile Include="Framework\ResourceManager.cpp" />
-    <ClCompile Include="Framework\Utils.cpp" />
     <ClCompile Include="GameObject\VertexArrayObj.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject\Object.cpp" />
@@ -170,8 +192,34 @@
     <ClCompile Include="GameObject\SpriteObject.cpp" />
     <ClCompile Include="GameObject\TextObject.cpp" />
     <ClCompile Include="Framework\SoundManager.cpp" />
+    <ClCompile Include="Ui\Custom\UderUi.cpp" />
+    <ClCompile Include="Ui\Custom\UnderObject.cpp" />
+    <ClCompile Include="Ui\UiMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ui\Custom\EditorBtn.h" />
+    <ClInclude Include="Scens\customScene\EditorChoice.h" />
+    <ClInclude Include="Ui\Episode\GameEndButton.h" />
+    <ClInclude Include="Ui\Episode\GameEnd.h" />
+    <ClInclude Include="Ui\Episode\EpisodeUiMgr.h" />
+    <ClInclude Include="GameObject\Jelly.h" />
+    <ClInclude Include="Ui\Ready\EpisodeBtn.h" />
+    <ClInclude Include="Scens\episode\EpisodeChoice.h" />
+    <ClInclude Include="Scens\episode\Ending.h" />
+    <ClInclude Include="Scens\episode\Ready.h" />
+    <ClInclude Include="Ui\Menu\MenuButton.h" />
+    <ClInclude Include="Ui\Menu\MenuUiMgr.h" />
+    <ClInclude Include="Ui\Custom\CustonPageObject.h" />
+    <ClInclude Include="Ui\Custom\CustomPage.h" />
+    <ClInclude Include="Ui\Custom\LeftObject.h" />
+    <ClInclude Include="Ui\Ready\ReadyButton.h" />
+    <ClInclude Include="Ui\Ready\ReadyUiMgr.h" />
+    <ClInclude Include="Ui\UiObject.h" />
+    <ClInclude Include="Ui\Custom\CustomSceneMgr.h" />
+    <ClInclude Include="Framework\Utils.h" />
+    <ClInclude Include="Ui\Custom\LeftUi.h" />
+    <ClInclude Include="Ui\Button.h" />
+    <ClInclude Include="Scens\customScene\CustomScene.h" />
     <ClInclude Include="Framework\FileManager.h" />
     <ClInclude Include="GameObject\Cookie\Cookie.h" />
     <ClInclude Include="GameObject\BackGround\BackGround.h" />
@@ -185,7 +233,6 @@
     <ClInclude Include="Framework\InputMgr.h" />
     <ClInclude Include="3rd\SingleTon.h" />
     <ClInclude Include="Framework\ResourceManager.h" />
-    <ClInclude Include="Framework\Utils.h" />
     <ClInclude Include="GameObject\Object.h" />
     <ClInclude Include="GameObject\VertexArrayObj.h" />
     <ClInclude Include="GameObject\Obstacle.h" />
@@ -198,6 +245,9 @@
     <ClInclude Include="Framework\SoundManager.h" />
     <ClInclude Include="Framework\info.h" />
     <ClInclude Include="Framework\FileData.h" />
+    <ClInclude Include="Ui\Custom\UderUi.h" />
+    <ClInclude Include="Ui\Custom\UnderObject.h" />
+    <ClInclude Include="Ui\UiMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

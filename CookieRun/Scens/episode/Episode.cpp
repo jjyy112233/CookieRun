@@ -10,9 +10,12 @@
 #include "../../GameObject/Cookie/Cookie.h"
 #include "../../GameObject/Obstacle.h"
 #include "../../Framework/FileManager.h"
+#include "../../Ui/Custom/CustomSceneMgr.h"
+#include "../../GameObject/Jelly.h"
+#include "../../Ui/Episode/EpisodeUiMgr.h"
 
 Episode::Episode(string dataPath)
-	:Scene(Scenes::Episode1), dataPath(dataPath)
+	:Scene(Scenes::Episode), isEnding(false)
 {
     botmW = 124.f;
     botmH = 200.f;
@@ -20,12 +23,18 @@ Episode::Episode(string dataPath)
 
 Episode::~Episode()
 {
+	Release();
 }
 
 void Episode::Init()
 {
-	auto episodeData = FILE_MGR->GetEpisode("episode1");
-	int i = 0;
+	point = 0;
+	currStageIdx = 0;
+	isEnding = false;
+	isFail = false;
+	isTimeOut = false;
+	failTimer = 0.f;
+	auto episodeData = FILE_MGR->GetEpisode(currEpisodeName);
 	for (auto& pair : episodeData)
 	{
 		auto stageInfo = pair.second;
@@ -56,48 +65,128 @@ void Episode::Init()
 			{
 				Obstacle* obs = new Obstacle;
 				obs->SetTexture(*RESOURCES_MGR->GetTexture(path));
+				obs->SetName(path);
 				obs->SetPos(obsPos);
-				auto points = FILE_MGR->GetHitBox(path);
-				obs->AddHitBox(FILE_MGR->GetHitBox(path), obsPos);
+				obs->SetInitPos(obsPos);
+				obs->Init();
 
 				objList[LayerType::Object][0].push_back(obs);
 				stage->obstacles.push_back(obs);
 				stage->SetAcitve(false);
 			}
 		}
-		i++;
+		{
+			map<string, vector<sf::Vector2f>> jellys = stageInfo.jellys;
+			for (auto& jellyInfo : jellys)
+			{
+				string path = jellyInfo.first;
+
+				for (auto& jelPos : jellyInfo.second)
+				{
+					Jelly* jelly = new Jelly;
+					jelly->SetTexture(*RESOURCES_MGR->GetTexture(path));
+					jelly->SetName(path);
+					jelly->SetPos(jelPos);
+					jelly->SetInitPos(jelPos);
+					jelly->Init();
+
+					objList[LayerType::Object][0].push_back(jelly);
+					stage->jelly.push_back(jelly);
+					stage->SetAcitve(false);
+				}
+			}
+		}
 	}
+
+	uiMgr = new EpisodeUiMgr(this);
+	uiMgr->Init();
 
 	{
 		SetStage(0); 
 	}
 
+
 	cookie = new Cookie();
 	objList[LayerType::Cookie][0].push_back(cookie);
+	cookie->SetEpi(this);
 	cookie->SetBottom(&currStage->bottoms);
 	cookie->SetObstacle(&currStage->obstacles);
+	cookie->SetJellys(&currStage->jelly);
 	cookie->Init();
 
+	//uiMgr = new CustomSceneMgr(this);
 }
 
 void Episode::Release()
 {
+	Scene::Release();
 }
 
 void Episode::Enter()
 {
+	SCENE_MGR->GetCurrScene()->SetViewPlay();
 	worldView.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
 	worldView.setCenter({ WINDOW_WIDTH/2,WINDOW_HEIGHT/2});
+	Init();
 }
 
 void Episode::Exit()
 {
+	Release();
+	stages.clear();
+}
+void Episode::Reset()
+{
+	point = 0;
+	currStageIdx = 0;
+	isEnding = false;
+	isFail = false;
+	isTimeOut = false;
+	failTimer = 0.f;
 
+	for (auto& layer : objList)
+	{
+		for (auto& obj_pair : layer.second)
+		{
+			auto objs = obj_pair.second;
+			for (auto& obj : objs)
+			{
+				obj->Release();
+				obj->Init();
+			}
+		}
+	}
+
+	uiMgr->Init();
+	{
+		SetStage(0);
+	}
+
+	cookie->SetBottom(&currStage->bottoms);
+	cookie->SetObstacle(&currStage->obstacles);
+	cookie->SetJellys(&currStage->jelly);
+	cookie->Init();
+
+	//uiMgr = new CustomSceneMgr(this);
 }
 
 void Episode::Update(float dt)
 {
 	Scene::Update(dt);
+
+	if (isTimeOut || isFail || isEnding)
+	{
+		for (auto& back : currStage->backs)
+		{
+			back->SetStop(true);
+		}
+		failTimer += dt;
+		if (failTimer > 2.f)
+		{
+			((EpisodeUiMgr*)uiMgr)->SetEnd();
+		}
+		return;
+	}
 	if (InputMgr::GetKeyDown(Keyboard::Space))
 	{
 		//SCENE_MGR->ChangeScene(Scenes::Episode2);
@@ -106,20 +195,38 @@ void Episode::Update(float dt)
 
 	if (currStage->isEnd())
 	{
-		auto prev = currStage;
-		cout << "Stage End" << endl;
 		currStageIdx++;
 
+		if (isEnding)
+			return;
+		if (stages.size() <= currStageIdx)
+		{
+			isEnding = true;
+			SCENE_MGR->GetCurrScene()->SetViewStop();
+			((EpisodeUiMgr*)uiMgr)->setStop();
+			return;
+		}
+
+
+		auto prev = currStage;
 		SetStage(currStageIdx);
 		cookie->SetBottom(&currStage->bottoms);
 		cookie->NextBottom(&prev->bottoms);
 		SetBackGround(prev, currStage);
 
 		cookie->SetObstacle(&currStage->obstacles);
+		cookie->SetJellys(&currStage->jelly);
+		cookie->PrevJellys(&prev->jelly);
 		cookie->NextObstacle(&prev->obstacles);
 
 		currStage->Move();
 	}
+	if (InputMgr::GetKeyDown(Keyboard::Tab))
+	{
+		SCENE_MGR->ChangeScene(Scenes::EpisodeList);
+		return;
+	}
+
 }
 
 void Episode::Draw(RenderWindow& window)
@@ -136,10 +243,17 @@ void Episode::SetStage(int idx)
 	{
 		objList[LayerType::Back][i++].push_back(back);
 	}
-	auto test = *(currStage->bottoms.end() - 1);
-	auto test2 = test->GetGlobalBounds().top + test->GetGlobalBounds().left;
+
 
 	currStage->SetAcitve(true);
+
+
+	auto uimgr = (EpisodeUiMgr*)this->uiMgr;
+	auto lastBotm = *(currStage->bottoms.end() - 1);
+	auto firstBtom = *(currStage->bottoms.begin());
+	float lb = lastBotm->GetGlobalBounds().left + lastBotm->GetGlobalBounds().width;
+	float fb = firstBtom->GetGlobalBounds().left;;
+	uimgr->setSpeed(lb - fb);
 }
 
 void Episode::test()
@@ -212,6 +326,51 @@ void Episode::SetBackGround(Stage* prev, Stage* now)
 	now->SetBackGround((int)BackGround::BackState::Enable);
 }
 
+void Episode::SetIsFail(bool state)
+{
+	isFail = state;
+	SCENE_MGR->GetCurrScene()->SetViewStop();
+	((EpisodeUiMgr*)uiMgr)->setStop();
+}
+
+void Episode::SetTimeOut(bool state)
+{
+	isTimeOut = state;
+	SCENE_MGR->GetCurrScene()->SetViewStop();
+	((EpisodeUiMgr*)uiMgr)->setStop();
+}
+
+void Episode::SetScene(Scenes scene)
+{
+	if (scene == Scenes::EpisodeList)
+	{
+		SCENE_MGR->ChangeScene(Scenes::EpisodeList);
+		//SCENE_MGR->ChangeScene(scene);
+	}
+	else if (scene == Scenes::Episode)
+	{
+		SCENE_MGR->ChangeScene(Scenes::EpisodeList);
+		//Exit();
+		//Enter();
+	}
+}
+
+Vector2f Episode::GetCookiePos()
+{
+	return cookie->GetPos();
+}
+
+void Episode::CookieIsFail()
+{
+	cookie->Fail();
+}
+
+void Episode::AddPoint(int point)
+{
+	this->point += point;
+	((EpisodeUiMgr*)uiMgr)->SetPoint(this->point);
+}
+
 void Stage::SetAcitve(bool active)
 {
 	for (BackGround* back : backs)
@@ -225,6 +384,10 @@ void Stage::SetAcitve(bool active)
 	for (Obstacle* obs : obstacles)
 	{
 		obs->SetActive(active);
+	}
+	for (Jelly* jel : jelly)
+	{
+		jel->SetActive(active);
 	}
 }
 
@@ -246,6 +409,10 @@ void Stage::Move()
 	for (auto obstacle : obstacles)
 	{
 		obstacle->Translate({WINDOW_WIDTH, 0});
+	}
+	for (auto jel : jelly)
+	{
+		jel->Translate({ WINDOW_WIDTH, 0 });
 	}
 
 }

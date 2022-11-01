@@ -32,29 +32,37 @@ protected:
 	float rotation;
 	Vector2f scale;    //부모자식 간의 관계가 있을수도 있지만 그건 일단 우리가 컨테이너로 만들어서 하자
 
+	map<string, vector<HitBox>> allHitBoxs;
 	vector<HitBox> hitBoxs;
 	HitBox bottomHitBox;
+	map<string, HitBox> allBottom;
+	bool hitDraw;
 public:
 	Object();
 	virtual ~Object();
 
 	virtual bool GetActive() const;
 	virtual void SetActive(bool active);
-
+	
 	virtual void Init();
 	virtual void Release();
+	virtual void Reset();
 
 	virtual void SetPos(const Vector2f& pos);
-	void Translate(const Vector2f& delta);
+	virtual void Translate(const Vector2f& delta);
 	virtual const Vector2f& GetPos() const;
 	virtual void AddHitBox(const HitBoxInfo& hit, Vector2f pos);
 	virtual void AddHitBox(const CookieHitBox& hit, Vector2f pos);
 	virtual void AddHitBox(RectangleShape hit, Vector2f pos, bool isBottom = false);
 	virtual void AddHitBox(CircleShape hit, Vector2f pos, bool isBottom = false);
 	virtual void AddHitBox(ConvexShape hit,vector<Vector2f> points, Vector2f pos, bool isBottom = false);
+	void AddHitBox(Shape* hitbox, Vector2f initPos);
+	void AddHitBox(HitBox hit);
 	virtual const vector<HitBox>* GetHitBox();
 	virtual const HitBox& GetHitBoxBottom();
 
 	virtual void Update(float dt);
 	virtual void Draw(RenderWindow& window);
+	void SetName(string name) { this->name = name; }
+	const string& GetName() const { return name; }
 };

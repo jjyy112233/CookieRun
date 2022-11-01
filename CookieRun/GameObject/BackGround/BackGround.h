@@ -23,6 +23,7 @@ private:
 	float color;
 	BackState state;
 	float timer;
+	bool isStop;
 	
 public:
 	BackGround(Texture* tex, float spd);
@@ -31,5 +32,6 @@ public:
 	void UpdateBackGround(float dt);
 	void SetActive(bool active);
 	void Draw(RenderWindow& window);
+	void SetStop(bool state) { isStop = state; }
 };
 

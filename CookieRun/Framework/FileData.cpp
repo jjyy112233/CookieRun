@@ -46,8 +46,7 @@ void ns::from_json(const json& j, RectangleInfo& c)
 
 void ns::to_json(json& j, const ConvexInfo& c)
 {
-    j = json{ {"points", c.points} };
-    j = json{ {"pos", c.pos} };
+    j = json{ {"points", c.points}, {"pos", c.pos} };
 }
 
 void ns::from_json(const json& j, ConvexInfo& c)

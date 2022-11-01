@@ -21,7 +21,9 @@ public:
 
 	void SetTexture(Texture& tex);
 	void SetColor(Color color);
+	Color GetColor();
 	void SetOrigin(Origins origin);
 	FloatRect GetGlobalBound();
+	Sprite& GetSprite() { return sprite; };
 };
 

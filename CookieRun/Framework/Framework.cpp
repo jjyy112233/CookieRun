@@ -18,6 +18,11 @@ Framework::Framework()
 
 Framework::~Framework()
 {
+    SCENE_MGR->Destroy();
+    FILE_MGR->Destroy();
+    SOUND_MGR->Destroy();
+    RESOURCES_MGR->Destroy();
+
 }
 
 float Framework::GetDT() const
@@ -32,12 +37,12 @@ float Framework::GetRealDT() const
 
 bool Framework::Init()
 {
-    FILE_MGR->LoadAll();
+    InputMgr::Init();
     RESOURCES_MGR->LoadAll();
     SOUND_MGR->Init();
-    DATATABLE_MGR->Init();
+    FILE_MGR->LoadAll();
+   // DATATABLE_MGR->Init();
     SCENE_MGR->Init();
-    InputMgr::Init();
     
     return true;
 }
@@ -48,19 +53,21 @@ bool Framework::Do()
     {
         deltaTime = clock.restart();
         float dt = GetDT();
-        InputMgr::ClearInput();
+        //dt /= 10;
+        InputMgr::Update(dt);
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            InputMgr::UpdateInput(event);
+            InputMgr::ProcessInput(event);
         }
 
-        window.clear();
         SCENE_MGR->Update(dt);
-        SCENE_MGR->Draw(window);
         SOUND_MGR->Update();
+
+        window.clear();
+        SCENE_MGR->Draw(window);
         window.display();
     }
 

@@ -5,10 +5,6 @@
 
 int main()
 {
-
-
-
-
     FRAMEWORK->Init();
     FRAMEWORK->Do();
     FRAMEWORK->~Framework();

@@ -5,6 +5,9 @@
 #include "../../Scens/SceneManager.h"
 #include "../../GameObject/VertexArrayObj.h"
 #include "../../GameObject/Obstacle.h"
+#include "../../GameObject/Jelly.h"
+#include "../../Scens/episode/Episode.h"
+#include "../../Ui/Episode/EpisodeUiMgr.h"
 
 
  Cookie::Cookie() : currState(States::None), viewPos(nullptr), timer(0.f),
@@ -12,8 +15,16 @@
 {
 
 }
+
+ void Cookie::SetEpi(Episode* epi)
+ {
+	 nowepisode = epi;
+ }
 void Cookie::Init()
 {
+	hp = 100.f;
+	isInv = false;
+	invTime = 0.f;
 	animator.SetTarget(&sprite);
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Run"));
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Jump"));
@@ -23,6 +34,8 @@ void Cookie::Init()
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Slide"));
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Down"));
 	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Bottom"));
+	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Fail"));
+	animator.AddClip(*RESOURCES_MGR->GetAnimationClip("Clear"));
 
 	SetState(States::Run);
 	SetOrigin(Origins::TL);
@@ -36,9 +49,61 @@ void Cookie::Init()
 		animator.AddEvent(ev);
 	}
 
-	AddHitBox(RectangleShape({ 40,10 }), { 180,354 }, true);
-	AddHitBox(RectangleShape({ 45.f,52.f }), { 176,300 });
-	AddHitBox(CircleShape(38), { 186,234 });
+	auto cookieInfo = FILE_MGR->GetCookie("Jungle");
+
+	for (auto& info : cookieInfo)
+	{
+		string type = info.first;
+		vector<HitBox> hits;
+		for (auto& hit : info.second.hitBox.circles)
+		{
+			HitBox h;
+			h.shape = new CircleShape(hit.rad);
+			h.initPos = hit.pos;
+			h.SetPos(position);
+			hits.push_back(h);
+			Utils::SetOrigin(*h.shape, Origins::TL);
+		}
+		for (auto& hit : info.second.hitBox.rectangls)
+		{
+			HitBox h;
+			h.shape = new RectangleShape(hit.size);
+			h.initPos = hit.pos;
+			h.SetPos(position);
+			hits.push_back(h);
+			Utils::SetOrigin(*h.shape, Origins::TL);
+		}
+		for (auto& hit : info.second.hitBox.points)
+		{
+			HitBox h;
+			auto s = new ConvexShape(hit.points.size());
+			int i = 0;
+			for (auto p : hit.points)
+				s->setPoint(i, p);
+
+			h.shape = s;
+			h.initPos = hit.pos;
+			h.SetPos(position);
+			hits.push_back(h);
+			Utils::SetOrigin(*h.shape, Origins::TL);
+		}
+
+		HitBox bottom;
+		bottom.shape = new RectangleShape{ info.second.bottom.size };
+		bottom.initPos = info.second.bottom.pos;
+		bottom.SetPos(position);
+		hits.push_back(bottom);
+
+		allBottom[type] = bottom;
+		allHitBoxs[type] = hits;
+	}
+
+	hitBoxs = allHitBoxs["Run"];
+	bottomHitBox = allBottom["Run"];
+
+	//AddHitBox(RectangleShape({ 40,10 }), { 180,354 }, true);
+	//AddHitBox(RectangleShape({ 45.f,52.f }), { 176,300 });
+	//AddHitBox(CircleShape(38), { 186,234 });
 }
 
 
@@ -57,29 +122,81 @@ void Cookie::SetObstacle(vector<Obstacle*>* obs)
 	obstacles = obs;
 }
 
+void Cookie::SetJellys(vector<Jelly*>* jel)
+{
+	jellys = jel;
+}
+
 void Cookie::NextObstacle(vector<Obstacle*>* obs)
 {
 	nextObstacles = obs;
+}
+
+void Cookie::PrevJellys(vector<Jelly*>* jel)
+{
+	prevJellys = jel;
 }
 
 bool Cookie::ObstaclesHit()
 {
 	for (auto& obs : *obstacles)
 	{
-		auto hitboxs = obs->GetHitBox();
-		for (auto& hit : *hitboxs)
+		auto obsHits = obs->GetHitBox();
+		for (auto& obsHit : *obsHits)
 		{
-			if (hit.shape->getGlobalBounds().intersects(bottomHitBox.shape->getGlobalBounds()))
-			{
-				return true;
-			}
+			for (auto& hit : hitBoxs)
+				if (obsHit.shape->getGlobalBounds().intersects(hit.shape->getGlobalBounds()))
+				{
+					return true;
+				}
 		}
 	}
 	return false;
 }
 
+void Cookie::JellysHit()
+{
+	if (prevJellys != nullptr)
+	{
+		for (auto& jel : *prevJellys)
+		{
+			if (jel->GetActive())
+			{
+				auto jellyHits = jel->GetHitBox();
+				for (auto& jellyHit : *jellyHits)
+				{
+					for (auto& hit : hitBoxs)
+						if (jellyHit.shape->getGlobalBounds().intersects(hit.shape->getGlobalBounds()))
+						{
+							jel->SetActive(false);
+							cout << "Hit Jelly" << endl;
+							((Episode*)(SCENE_MGR->GetCurrScene()))->AddPoint(jel->getPoint());
+						}
+				}
+			}
+		}
+	}
+	for (auto& jel : *jellys)
+	{
+		if (jel->GetActive())
+		{
+			auto jellyHits = jel->GetHitBox();
+			for (auto& jellyHit : *jellyHits)
+			{
+				for (auto& hit : hitBoxs)
+					if (jellyHit.shape->getGlobalBounds().intersects(hit.shape->getGlobalBounds()))
+					{
+						jel->SetActive(false);
+						cout << "Hit Jelly" << endl;
+						((Episode*)(SCENE_MGR->GetCurrScene()))->AddPoint(jel->getPoint());
+					}
+			}
+		}
+	}
+}
 bool Cookie::IsBottomHit()
 {
+	
 	for (auto& botm : *bottoms)
 	{
 		if (botm->GetGlobalBounds().intersects(bottomHitBox.shape->getGlobalBounds()))
@@ -131,6 +248,8 @@ void Cookie::SetState(States newState)
 	case Cookie::States::None:
 		break;
 	case Cookie::States::Run:
+		hitBoxs = allHitBoxs["Run"];
+		bottomHitBox = allBottom["Run"];
 		animator.Play("Run");
 		break;
 	case Cookie::States::Jump:
@@ -142,6 +261,8 @@ void Cookie::SetState(States newState)
 		animator.Play("DoubleJump");
 		break;
 	case Cookie::States::Slide:
+		hitBoxs = allHitBoxs["Slide"];
+		bottomHitBox = allBottom["Slide"];
 		animator.Play("Slide");
 		break;
 	case Cookie::States::Dash:
@@ -156,6 +277,16 @@ void Cookie::SetState(States newState)
 		break;
 	case Cookie::States::FallDie:
 		break;
+	case Cookie::States::Fail:
+		isInv = false;
+		invTime = 0.f;
+		animator.Play("Fail");
+		break;
+	case Cookie::States::Clear:
+		hitBoxs = allHitBoxs["Clear"];
+		bottomHitBox = allBottom["Clear"];
+		animator.Play("Clear");
+		break;
 	case Cookie::States::Count:
 		break;
 	default:
@@ -166,54 +297,100 @@ void Cookie::SetState(States newState)
 
 void Cookie::Update(float dt)
 {
-	cout << position.y << endl;
-	UpdateInput();
-	if (ObstaclesHit())
-	{
-		std::cout << "Hit Obs" << std::endl;
-	}
-
 	if (viewPos == nullptr)
 	{
 		viewPos = &(SCENE_MGR->GetCurrScene())->GetWorldView().getCenter();
-
 	}
 
-	switch (currState)
+	if (!nowepisode->GetIsEnd())
 	{
-	case Cookie::States::None:
-		break;
-	case Cookie::States::Run:
-		UpdateRun(dt);
-		break;
-	case Cookie::States::Jump:
-		UpdateJump(dt);
-		break;
-	case Cookie::States::DoubleJump:
-		UpdateDoubleJump(dt);
-		break;
-	case Cookie::States::Slide:
-		UpdateSlide(dt);
-		break;
-	case Cookie::States::Dash:
-		break;
-	case Cookie::States::Fly:
-		break;
-	case Cookie::States::Down:
-		UpdateDown(dt);
-		break;
-	case Cookie::States::Bottom:
-		UpdateBottom(dt);
-		break;
-	case Cookie::States::FallDie:
-		UpdateFallDie(dt);
-		break;
-	case Cookie::States::Count:
-		break;
-	default:
-		break;
-	}
+		UpdateInput();
+		JellysHit();
+		if (currState != States::Fail)
+		{
+			if (ObstaclesHit() && !invTime)
+			{
+				((EpisodeUiMgr*)(SCENE_MGR->GetCurrScene()->GetUiMgr()))->SetHp();
+				cout << "Hit Obs" << endl;
+				hp -= 10;
+				isInv = true;
+				SetColor(Color::White);
+				invTime = 0.f;
+				invColorTime = 0.f;
+			}
 
+			if (isInv)
+			{
+				invColorTime += dt;
+				invTime += dt;
+
+				if (invColorTime > 0.1f)
+				{
+					invColorTime = 0.f;
+					auto color = GetColor();
+					SetColor(color.a != 255 ? Color::White : Color(255, 255, 255, 100));
+				}
+			}
+
+			if (invTime > 1.f)
+			{
+				invTime = 0.f;
+				invColorTime = 0.f;
+				SetColor(Color::White);
+				isInv = false;
+			}
+		}
+
+		switch (currState)
+		{
+		case Cookie::States::None:
+			break;
+		case Cookie::States::Run:
+			UpdateRun(dt);
+			break;
+		case Cookie::States::Jump:
+			UpdateJump(dt);
+			break;
+		case Cookie::States::DoubleJump:
+			UpdateDoubleJump(dt);
+			break;
+		case Cookie::States::Slide:
+			UpdateSlide(dt);
+			break;
+		case Cookie::States::Dash:
+			break;
+		case Cookie::States::Fly:
+			break;
+		case Cookie::States::Down:
+			UpdateDown(dt);
+			break;
+		case Cookie::States::Bottom:
+			UpdateBottom(dt);
+			break;
+		case Cookie::States::Fail:
+			UpdateFail(dt);
+			break;
+		case Cookie::States::Clear:
+			UpdateFallDie(dt);
+		case Cookie::States::FallDie:
+			UpdateFallDie(dt);
+			break;
+		case Cookie::States::Count:
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		Translate(Vector2f{ 0,1 } *500.f * dt);
+		if (IsBottomHit())
+		{
+			SetState(States::Clear);
+			SetPos({ position.x, nowBottom->GetGlobalBounds().top - height });
+		}
+		Translate(Vector2f{ 1,0 } *500.f * dt);
+	}
 	animator.Update(dt);
 	SpriteObject::Update(dt);
 }
@@ -257,6 +434,7 @@ void Cookie::OnBottom()
 
 void Cookie::UpdateRun(float dt)
 {
+	//SetPos(InputMgr::GetMousePos() - Vector2f{GetGlobalBound().width /2, GetGlobalBound().height/2});
 	SetPos({ viewPos->x - 400.f, position.y + dt * 500.f });
 	if (IsBottomHit())
 	{
@@ -293,7 +471,6 @@ void Cookie::UpdateJump(float dt)
 		velocity = Vector2f(0.f, -1000.f);
 		gravity = Vector2f(0.f, 3000.f);
 	}
-	cout << position.y << endl;
 
 }
 
@@ -319,12 +496,31 @@ void Cookie::UpdateDoubleJump(float dt)
 		gravity = Vector2f(0.f, 3000.f);
 		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
 	}
-	//std::cout << position.y << std::endl;
+	if (IsBottomBodyHit())
+	{
+		SetState(States::FallDie);
+		return;
+	}
 }
 
 void Cookie::UpdateSlide(float dt)
 {
-	SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
+	SetPos({ viewPos->x - 400.f, position.y + dt * 500.f });
+	if (IsBottomHit())
+	{
+		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
+	}
+	else
+	{
+		if (nowBottom->GetGlobalBounds().top > position.y + height)
+		{
+		}
+		else
+		{
+			SetState(States::Down);
+		}
+	}
+
 }
 
 void Cookie::UpdateDash(float dt)
@@ -352,5 +548,20 @@ void Cookie::UpdateFly(float dt)
 void Cookie::UpdateFallDie(float dt)
 {
 	SetPos({ viewPos->x - 400.f,position.y + dt * 1000.f });
-	SCENE_MGR->GetCurrScene()->SetViewStop();
+	((Episode*)SCENE_MGR->GetCurrScene())->SetIsFail(true);
+}
+void Cookie::UpdateFail(float dt)
+{
+	SetPos({ viewPos->x - 400.f, position.y + dt * 500.f });
+	if (IsBottomHit())
+	{
+		SetPos({ viewPos->x - 400.f, nowBottom->GetGlobalBounds().top - height });
+	}
+
+	((Episode*)SCENE_MGR->GetCurrScene())->SetIsFail(true);
+}
+
+void Cookie::Fail()
+{
+	SetState(States::Fail);
 }

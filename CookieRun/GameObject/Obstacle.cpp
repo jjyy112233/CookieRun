@@ -11,6 +11,7 @@ Obstacle::~Obstacle()
 void Obstacle::Init()
 {
 	SpriteObject::Init();
+	AddHitBox(FILE_MGR->GetHitBox(GetName()), initPos);
 }
 
 void Obstacle::SetPos(const Vector2f& pos)
@@ -18,8 +19,10 @@ void Obstacle::SetPos(const Vector2f& pos)
 	Vector2f delta = pos - position;
 	SpriteObject::SetPos(position + delta);
 }
-
-
+void Obstacle::SetInitPos(const Vector2f& pos)
+{
+	initPos = pos;
+}
 void Obstacle::Translate(const Vector2f& delta)
 {
 	SpriteObject::Translate(delta);
@@ -28,11 +31,11 @@ void Obstacle::Translate(const Vector2f& delta)
 void Obstacle::SetTexture(Texture& tex)
 {
 	sprite.setTexture(tex);
-	SetOrigin(Origins::BC);
 }
 
 void Obstacle::Update(float dt)
 {
+	SpriteObject::Update(dt);
 }
 
 void Obstacle::Draw(RenderWindow& window)

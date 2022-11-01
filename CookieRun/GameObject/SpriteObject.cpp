@@ -6,6 +6,7 @@ SpriteObject::SpriteObject()
 
 SpriteObject::~SpriteObject()
 {
+	Release();
 }
 
 void SpriteObject::Init()
@@ -19,7 +20,8 @@ void SpriteObject::Update(float dt)
 
 void SpriteObject::Draw(RenderWindow& window)
 {
-	window.draw(sprite);
+	if(enabled)
+		window.draw(sprite);
 	Object::Draw(window);
 }
 
@@ -29,7 +31,7 @@ void SpriteObject::SetScale(Vector2f scale)
 }
 void SpriteObject::SetSize(Vector2f size)
 {
-	auto bound = sprite.getGlobalBounds();
+	auto bound = sprite.getLocalBounds();
 	sprite.setScale({ size.x / bound.width,size.y / bound.height });
 }
 
@@ -51,6 +53,10 @@ void SpriteObject::SetTexture(Texture& tex)
 void SpriteObject::SetColor(Color color)
 {
 	sprite.setColor(color);
+}
+Color SpriteObject::GetColor()
+{
+	return sprite.getColor();
 }
 
 void SpriteObject::SetOrigin(Origins origin)

@@ -17,6 +17,8 @@ public:
 	void SetText(Font& font, int size, Color color, string str);
 	void SetPosition(Vector2f pos);
 	void SetOrigin(Origins origin);
+	void SetString(string str);
+	string GetString() { return text.getString(); }
 };
 
 

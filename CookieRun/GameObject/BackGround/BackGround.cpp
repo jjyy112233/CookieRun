@@ -5,6 +5,7 @@
 
 BackGround::BackGround(Texture* tex, float spd)
 {
+	isStop = false;
 	SetTexture(*tex);
 	SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
 	width = (int)sprite.getGlobalBounds().width;
@@ -15,13 +16,13 @@ BackGround::BackGround(Texture* tex, float spd)
 	right.SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
 	right.SetPos({ (float)width, 0.f });
 
-	right2.SetTexture(*tex);
-	right2.SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
-	right2.SetPos({ (float) + width*2.f, 0.f});
+	//right2.SetTexture(*tex);
+	//right2.SetSize({ WINDOW_WIDTH,WINDOW_HEIGHT });
+	//right2.SetPos({ (float) + width*2.f, 0.f});
 
 	SetColor(Color::Black);
 	right.SetColor(Color::Black);
-	right2.SetColor(Color::Black);
+	//right2.SetColor(Color::Black);
 	color = 0.f;
 
 	state = BackState::None;
@@ -31,20 +32,23 @@ BackGround::BackGround(Texture* tex, float spd)
 
 void BackGround::Update(float dt)
 {
+	if (isStop)
+		return;
 	if (enabled)
 	{
 		UpdateBackGround(dt);
 		Translate(dt * speed * Vector2f{ -1.f,0.f });
-		right.SetPos(Vector2f{ position.x + (float)width, 0.f });
-		right2.SetPos(Vector2f{ position.x + (float)width * 2.f, 0.f });
+		//right2.SetPos(Vector2f{ position.x + (int)width * 2, 0.f });
 
 		auto worldPos = SCENE_MGR->GetCurrScene()->ScreenToWorld({ 0,0 });
 
-		if (worldPos.x > position.x + width)
+		if (worldPos.x > position.x + (int)width)
 		{
-			std::cout << "OUT" << std::endl;
 			SetPos(SCENE_MGR->GetCurrScene()->ScreenToWorld({ 0, 0 }));
 		}
+
+		//right.Translate(dt * speed * Vector2f{ -1.f,0.f });
+		right.SetPos(Vector2f{ position.x + (int)width, 0.f });
 		SpriteObject::Update(dt);
 	}
 }
@@ -78,7 +82,7 @@ void BackGround::UpdateBackGround(float dt)
 			color = max(color, 0.f);
 			SetColor(Color((int)color, (int)color, (int)color, (int)color));
 			right.SetColor(Color((int)color, (int)color, (int)color, (int)color));
-			right2.SetColor(Color((int)color, (int)color, (int)color, (int)color));
+			//right2.SetColor(Color((int)color, (int)color, (int)color, (int)color));
 		}
 		else
 		{
@@ -92,7 +96,7 @@ void BackGround::UpdateBackGround(float dt)
 			color = min(color, 255.f);
 			SetColor(Color((int)color, (int)color, (int)color, (int)color));
 			right.SetColor(Color((int)color, (int)color, (int)color, (int)color));
-			right2.SetColor(Color((int)color, (int)color, (int)color, (int)color));
+			//right2.SetColor(Color((int)color, (int)color, (int)color, (int)color));
 		}
 		else
 		{
@@ -107,14 +111,14 @@ void BackGround::SetActive(bool active)
 {
 	SpriteObject::SetActive(active);
 	right.SetActive(active);
-	right2.SetActive(active);
+	//right2.SetActive(active);
 }
 void BackGround::Draw(RenderWindow& window)
 {
 	if (enabled)
 	{
 		SpriteObject::Draw(window);
-		right2.Draw(window);
+		//right2.Draw(window);
 		right.Draw(window);
 	}
 }

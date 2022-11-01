@@ -2,11 +2,11 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <nlohmann/json.hpp> //아니 nlohmann 이거 설치하라고 이;거"
+#include <nlohmann/json.hpp> 
 #include <SFML/System/Vector2.hpp>
 
 using json = nlohmann::json;
-using namespace std;
+using namespace std;	
 
 enum class FileTypes
 {
@@ -67,16 +67,16 @@ namespace ns {
 		string bottomPath;		//bottom block path
 		vector<int> bottomPos;	//bottom block draw position
 		map<string, vector<sf::Vector2f>> obstacles; //obstacles draw path, draw position
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(MapData, backInfo, bottomPath, bottomPos, obstacles)
+		map<string, vector<sf::Vector2f>> jellys; //obstacles draw path, draw position
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(MapData, backInfo, bottomPath, bottomPos, obstacles, jellys)
 	};
 
 	struct HitBoxInfo
 	{
-		string id;
 		vector<ns::CircleInfo> circles;    // rad, pos
 		vector<ns::RectangleInfo> rectangls;  //  size , pos
 		vector <ns::ConvexInfo> points; //point
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(HitBoxInfo, id, circles, rectangls, points)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(HitBoxInfo, circles, rectangls, points)
 	};
 
 	struct CookieHitBox
@@ -85,6 +85,6 @@ namespace ns {
 		HitBoxInfo hitBox;
 		ns::RectangleInfo bottom;
 		
-		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CookieHitBox, hitBox, bottom)
+		NLOHMANN_DEFINE_TYPE_INTRUSIVE(CookieHitBox, type, hitBox, bottom)
 	};
 
