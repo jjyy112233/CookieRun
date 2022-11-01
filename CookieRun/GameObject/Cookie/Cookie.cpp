@@ -8,6 +8,7 @@
 #include "../../GameObject/Jelly.h"
 #include "../../Scens/episode/Episode.h"
 #include "../../Ui/Episode/EpisodeUiMgr.h"
+#include "../../Framework/SoundManager.h"
 
 
  Cookie::Cookie() : currState(States::None), viewPos(nullptr), timer(0.f),
@@ -169,7 +170,7 @@ void Cookie::JellysHit()
 						if (jellyHit.shape->getGlobalBounds().intersects(hit.shape->getGlobalBounds()))
 						{
 							jel->SetActive(false);
-							cout << "Hit Jelly" << endl;
+							SOUND_MGR->Play("sounds/coin.wav", false);
 							((Episode*)(SCENE_MGR->GetCurrScene()))->AddPoint(jel->getPoint());
 						}
 				}
@@ -187,7 +188,7 @@ void Cookie::JellysHit()
 					if (jellyHit.shape->getGlobalBounds().intersects(hit.shape->getGlobalBounds()))
 					{
 						jel->SetActive(false);
-						cout << "Hit Jelly" << endl;
+						SOUND_MGR->Play("sounds/coin.wav", false);
 						((Episode*)(SCENE_MGR->GetCurrScene()))->AddPoint(jel->getPoint());
 					}
 			}
@@ -254,16 +255,19 @@ void Cookie::SetState(States newState)
 		break;
 	case Cookie::States::Jump:
 		animator.Play("Jump");
+		SOUND_MGR->Play("sounds/jump.wav", false);
 		break;
 	case Cookie::States::DoubleJump:
 		velocity = Vector2f(0.f, -1000.f);
 		gravity = Vector2f(0.f, 3000.f);
 		animator.Play("DoubleJump");
+		SOUND_MGR->Play("sounds/jump.wav", false);
 		break;
 	case Cookie::States::Slide:
 		hitBoxs = allHitBoxs["Slide"];
 		bottomHitBox = allBottom["Slide"];
 		animator.Play("Slide");
+		SOUND_MGR->Play("sounds/slide.wav", false);
 		break;
 	case Cookie::States::Dash:
 		break;

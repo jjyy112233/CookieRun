@@ -12,6 +12,7 @@ private:
 	list<Sound*> playing;
 	list<Sound*> waiting;
 	float volume;
+	string nowBgm;
 public:
 	const int TotalChannels;
 	SoundManager();
@@ -21,6 +22,8 @@ public:
 	void Play(string id, bool loop = false);
 	void StopAll();
 	void Update();
+	void SetNowBgm(string str) { nowBgm = str; }
+	string GetNowBgm() { return nowBgm; }
 };
 
 #define SOUND_MGR (SoundManager::GetInstance())

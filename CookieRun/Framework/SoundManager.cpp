@@ -2,7 +2,7 @@
 #include "ResourceManager.h"
 
 SoundManager::SoundManager()
-	: TotalChannels(64), volume(100.f)
+	: TotalChannels(128), volume(100.f)
 {
 }
 

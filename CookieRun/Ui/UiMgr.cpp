@@ -64,10 +64,10 @@ void UiMgr::Update(float dt)
     {
         for (auto& uiObj : uiObjs.second)
         {
-            bool t = uiObj->GetEvent();
+            //bool t = uiObj->GetEvent();
             uiObj->Update(dt);
-            if (t)
-                return;
+            //if (t)
+            //    return;
         }
         
         //for (auto it = uiObjs.second.rbegin(); it != uiObjs.second.rend(); it++)

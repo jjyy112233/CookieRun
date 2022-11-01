@@ -128,6 +128,13 @@ void Episode::Enter()
 	worldView.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
 	worldView.setCenter({ WINDOW_WIDTH/2,WINDOW_HEIGHT/2});
 	Init();
+
+	if (SOUND_MGR->GetNowBgm() != "sounds/" + currEpisodeName + ".wav")
+	{
+		SOUND_MGR->StopAll();
+		SOUND_MGR->Play("sounds/" + currEpisodeName + ".wav", true);
+		SOUND_MGR->SetNowBgm("sounds/" + currEpisodeName + ".wav");
+	}
 }
 
 void Episode::Exit()

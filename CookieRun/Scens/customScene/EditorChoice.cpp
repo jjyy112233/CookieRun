@@ -6,6 +6,7 @@
 #include "../../Framework/info.h"
 #include "../../Framework/InputMgr.h"
 #include "../SceneManager.h"
+#include "../../Framework/SoundManager.h"
 
 EditorChoice::EditorChoice()
 	:Scene(Scenes::EpisodeList)
@@ -14,6 +15,12 @@ EditorChoice::EditorChoice()
 
 void EditorChoice::Enter()
 {
+	if (SOUND_MGR->GetNowBgm() != "sounds/loby.wav")
+	{
+		SOUND_MGR->StopAll();
+		SOUND_MGR->Play("sounds/loby.wav", true);
+		SOUND_MGR->SetNowBgm("sounds/loby.wav");
+	}
 	SetViewStop();
 	Init();
 }

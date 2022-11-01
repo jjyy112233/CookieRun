@@ -7,6 +7,7 @@
 #include "../../Framework/Utils.h"
 #include "../../Framework/info.h"
 #include "../../Ui/Ready/ReadyUiMgr.h"
+#include "../../Framework/SoundManager.h"
 
 Ready::Ready()
 	:Scene(Scenes::Ready)
@@ -40,6 +41,12 @@ void Ready::Release()
 void Ready::Enter()
 {
 	Init();
+	if (SOUND_MGR->GetNowBgm() != "sounds/menu.wav")
+	{
+		SOUND_MGR->StopAll();
+		SOUND_MGR->Play("sounds/menu.wav", true);
+		SOUND_MGR->SetNowBgm("sounds/menu.wav");
+	}
 	SCENE_MGR->GetCurrScene()->SetViewStop();
 	SCENE_MGR->GetCurrScene()->GetWorldView().setCenter({ WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f });
 	SCENE_MGR->GetCurrScene()->GetWorldView().setSize({ WINDOW_WIDTH , WINDOW_HEIGHT });
